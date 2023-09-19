@@ -344,12 +344,16 @@ def moveBall(window, canvas, Ball, moveX, moveY):
     global target, currentBallX, currentBallY, currentFieldLocal, count, target, canvasLocal
     count += 1
         
-    if count <= 9:
+    if count <= 9 and playing == True:
         canvas.move(Ball, moveX, moveY)
         currentBallX += moveX
         currentBallY += moveY
         checkCurrentField(canvas, Ball)
         canvas.after(100, lambda: moveBall(window, canvas, Ball, moveX, moveY))
+    elif playing == False:
+        reset(canvas, Ball)
+        footballGame(window, canvas, Ball, 0, 0)    
+    
     
     if count == 10:
         count = 0

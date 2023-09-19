@@ -17,7 +17,7 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
     lblDate, lblEvent, level, lblFactories, lblOffices, lblResidents, lblTransport, lblEducation, lblEntertainment, lblShopping, lblGarbage, lblPolice, lblFire, lblMedical, lblQuery, lblMoneyAdd, frameSatisfaction, frameCitybuild, btnUpgrades, lblValues, upgradePrice, 
     lblStreets, lblWater, incomeTime, lblVehicles, lblEnergy, lblSchools, lblStadium, clicked, events, lblresidentsLeave, lblnewResidents, lblEventChoice1, lblEventChoice2, lblEventChoice3, lblEnergyStatus, 
     lblWaterStatus, lblWeatherStatus, lblPersonStatus, lblMoneyStatus, lblSatisfactionStatus,blinkRed, resetProgress, btnCityInformation, pad1, pad2, pad3, pad4, pad5, lblConstructing, lblDamagedHouse, frameWeather, lblExplain,
-    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2):
+    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2, roadcondition):
     """Calculate all values needed for the game"""
     lvlBonus = None
     global start, criminalResidents, injuredResidents, lvl2, lvl3_1, lvl3_2, lvl4_1, lvl4_2
@@ -31,35 +31,36 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
     probabilityJoin = []
     probabilityLeave = []
     max = int(residents/4)
+    maxLeave = int(residents/6)
     for resident in range (1, max):
         cumWeights.append(resident*2)
         probabilityJoin.append(max - resident)
-        if residents >= 100:
-            probabilityLeave.append(max - resident)
-            #Leave probalility reduzieren!
-            
+        if residents >= 100 or satisfaction <= 20:
+            probabilityLeave.append(maxLeave - resident)
+                    
     rN = random.choices(probabilityJoin, weights=cumWeights, k=1) 
     print(cumWeights)
     print(probabilityJoin)
     print(probabilityLeave)
-    rN = rN[0]
+    rN = int(rN[0] * satisfaction / 100)
     print(rN)
-    if residents >= 100:
+    if residents >= 100 or satisfaction <= 20:
         ctzLeave = random.choices(probabilityLeave, weights=cumWeights, k=1) 
         ctzLeave = ctzLeave[0] * -1
     else:
         ctzLeave = 0
     lvlBonus = ((level[0]*10 + level[1]*20 + level[2]*30 + level[3]*40 + level[4]*50)  / 150)
     lvlBonus = int(lvlBonus)
-    
-        
+      
     #Join/Leave Residents
     leaveCity = ctzLeave + int(random.randint(0, ctzLeave*(taxes-10)))
     if leaveCity < 0:
         leaveCity = 0
     joinCity = rN + lvlBonus + int(random.randint(0, rN*(taxes-10)))
     residents = residents + joinCity - leaveCity
-
+    if residents < 0:
+        residents = 0
+    
     #Calculate department store revenue
     storeRevenue = 0
     customersDaily = residents/2 + random.randint(int((-1*(residents/4))), int((residents/4)))
@@ -202,7 +203,15 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
         if stage >= 4:
             lblStadium.grid(column=3, row=10, columnspan=2, sticky = tk.W)
             lblStadium.bind("<Button-1>", clicked)
-            
+    
+    #Calculate road condition
+    if TimeControls.daysPlayedLocal %10 == 0:
+        roadcondition = roadcondition-1
+    print(roadcondition)
+    
+    #Calculate traffic flow
+    
+    
     #Random chance for a event
     """
     if stage >= 2:
@@ -264,7 +273,13 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
     lblDate, lblEvent, level, lblFactories, lblOffices, lblResidents, lblTransport, lblEducation, lblEntertainment, lblShopping, lblGarbage, lblPolice, lblFire, lblMedical, lblQuery, lblMoneyAdd, frameSatisfaction, frameCitybuild, btnUpgrades, lblValues, upgradePrice, \
     lblStreets, lblWater, incomeTime, lblVehicles, lblEnergy, lblSchools, lblStadium, clicked, events, lblresidentsLeave, lblnewResidents, lblEventChoice1, lblEventChoice2, lblEventChoice3, lblEnergyStatus, \
     lblWaterStatus, lblWeatherStatus, lblPersonStatus, lblMoneyStatus, lblSatisfactionStatus,blinkRed, resetProgress, btnCityInformation, pad1, pad2, pad3, pad4, pad5, lblConstructing, lblDamagedHouse, frameWeather, lblExplain, \
-    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2
+    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2, roadcondition
+
+
+
+
+
+
 
 taxProgressResidents = 0
 taxSliderResidents = 0
@@ -272,11 +287,12 @@ taxProgressBusiness = 0
 taxSliderBusiness = 0
 lblTaxValue = 0
 lblTaxValueBusiness = 0
-def setupValues(frameSlideValues, taxes): 
+def setupValues(frameSlideValues): 
     global taxProgressResidents, taxSliderResidents, lblTaxValue, lblTaxValueBusiness, taxSliderBusiness, taxProgressBusiness
     
     #Slider for residents taxes
-    taxVar = tk.IntVar(frameSlideValues, value=10)   
+    taxVar = tk.IntVar(frameSlideValues, value=10)  
+    lblTaxResidents = tk.Label(frameSlideValues, text="Lohnsteuer (Einwohner)") 
     taxProgressResidents = ttk.Progressbar(
         frameSlideValues,
         orient="horizontal",
@@ -290,13 +306,15 @@ def setupValues(frameSlideValues, taxes):
         from_=0, to=20,
         showvalue=0,
         command=changeTax)
+    lblTaxResidents.grid(column=0, row=0)
     lblTaxValue = tk.Label(frameSlideValues, text=f"{taxSliderResidents.get()}%")
-    taxProgressResidents.grid(column=0,row=0, sticky="n")
-    taxSliderResidents.grid(column=0,row=1, sticky="n")
-    lblTaxValue.grid(column=1,row=0, sticky="n")
+    taxProgressResidents.grid(column=0,row=1, sticky="n")
+    taxSliderResidents.grid(column=0,row=2, sticky="n")
+    lblTaxValue.grid(column=1,row=1, sticky="w")
     
     #Slider for Business taxes
     taxVarBusiness = tk.IntVar(frameSlideValues, value=19)   
+    lblTaxBusiness = tk.Label(frameSlideValues, text="Umsatzsteuer (Gewerbe)") 
     taxProgressBusiness = ttk.Progressbar(
         frameSlideValues,
         orient="horizontal",
@@ -310,20 +328,21 @@ def setupValues(frameSlideValues, taxes):
         from_=0, to=30,
         showvalue=0,
         command=changeTax)
+    lblTaxBusiness.grid(column=0, row=3)
     lblTaxValueBusiness = tk.Label(frameSlideValues, text=f"{taxSliderBusiness.get()}%")
-    taxProgressBusiness.grid(column=0,row=2, sticky="n")
-    taxSliderBusiness.grid(column=0,row=3, sticky="n")
-    lblTaxValueBusiness.grid(column=1,row=2, sticky="n")
+    taxProgressBusiness.grid(column=0,row=4, sticky="n")
+    taxSliderBusiness.grid(column=0,row=5, sticky="n")
+    lblTaxValueBusiness.grid(column=1,row=4, sticky="w")
 
 def changeTax(value):
     global taxProgressResidents, taxSliderResidents, lblTaxValue, lblTaxValueBusiness, taxProgressBusiness, taxSliderBusiness
     
     taxProgressResidents["value"] = taxSliderResidents.get()
     lblTaxValue["text"] = str(taxSliderResidents.get()) + "%"
-    lblTaxValue.grid(column=1,row=0, sticky="n")
+    lblTaxValue.grid(column=1,row=1, sticky="w")
     taxProgressBusiness["value"] = taxSliderBusiness.get()
     lblTaxValueBusiness["text"] = str(taxSliderBusiness.get()) + "%"
-    lblTaxValueBusiness.grid(column=1,row=2, sticky="n")
+    lblTaxValueBusiness.grid(column=1,row=4, sticky="w")
         
 def getCurrentTaxes():
     global taxSliderResidents, taxSliderBusiness

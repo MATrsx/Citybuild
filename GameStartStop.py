@@ -1,10 +1,12 @@
 import random 
 import datetime
 import tkinter as tk
+from tkinter import *
 import tkinter.ttk as ttk
 from PIL import ImageTk, Image
 import os
 from pathlib import Path
+import threading, TestFile
 
 save1Local = []
 save2Local = []
@@ -268,8 +270,8 @@ def load(event):
 def endGame(window):
     """End the game"""
     window.destroy()
-    
-def newGame(btnClose,btnLoad, lblExplain, btnSave, btnStart, lblQuery, lblSave1, lblSave2, lblSave3, entEntry, lblWelcome):
+
+def newGame(btnClose,btnLoad, lblExplain, btnSave, btnStart, lblQuery, lblSave1, lblSave2, lblSave3, entEntry, lblWelcome, window):
     """Create a new game"""
     btnClose.grid_forget()
     btnLoad.grid_forget()
@@ -284,4 +286,3 @@ def newGame(btnClose,btnLoad, lblExplain, btnSave, btnStart, lblQuery, lblSave1,
     entEntry.bind('<Return>', lambda event=None: btnSave.invoke())
     lblWelcome.grid(column=0, row=2)
     entEntry.grid(column=0, row=3)
-    

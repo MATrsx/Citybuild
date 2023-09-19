@@ -193,7 +193,7 @@ def createMenuBar(frameMenuBar):
     xSize = 30
     ySize = 30
     
-    imageRoad = Image.open(basePath / "Images" / "MenuBar" / "road.png")
+    imageRoad = Image.open(basePath / "Images" / "MenuBar" / "roadGoodCondition.png")
     roadSized = imageRoad.resize((xSize,ySize))
     roadP = ImageTk.PhotoImage(roadSized)
     lblRoad = tk.Label(frameMenuBar, image = roadP, anchor= "center")
@@ -273,6 +273,29 @@ def createMenuBar(frameMenuBar):
 
     return lblRoad, lblWater, lblElectric, lblWaste, lblEducation, lblTransport, lblPolice, lblFireDep, lblHealth, lblEntertainment, lblShopping, lblIndicatorOpen, lblIndicatorClosed
 
+def createRoadConditions():
+    xSize = 30
+    ySize = 30
+    
+    ph = []
+    
+    imageRoad = Image.open(basePath / "Images" / "MenuBar" / "roadGoodCondition.png")
+    roadSized = imageRoad.resize((xSize,ySize))
+    roadP = ImageTk.PhotoImage(roadSized)
+    ph.append(roadP)
+    
+    imageRoad = Image.open(basePath / "Images" / "MenuBar" / "roadBadCondition.png")
+    roadSized = imageRoad.resize((xSize,ySize))
+    roadP = ImageTk.PhotoImage(roadSized)
+    ph.append(roadP)
+    
+    imageRoad = Image.open(basePath / "Images" / "MenuBar" / "roadVeryBadCondition.png")
+    roadSized = imageRoad.resize((xSize,ySize))
+    roadP = ImageTk.PhotoImage(roadSized)
+    ph.append(roadP)
+    
+    return ph
+
 def createRoadIcons(frameSelectedItem):
 
     xSize = 50
@@ -309,6 +332,36 @@ def createRoadIcons(frameSelectedItem):
     lblParkingLot.image = parkingLotP
     
     return lblRoadCity, lblRoadIntercity, lblMotorway, lblParking, lblParkingLot
+
+def createEnergyIcons(frameSelectedItem):
+    xSize = 50
+    ySize = 50
+
+    imageSolar = Image.open(basePath / "Images" / "MenuBar" / "MenuEnergy" / "solar-panels.png")
+    solarSized = imageSolar.resize((xSize,ySize))
+    solarP = ImageTk.PhotoImage(solarSized)
+    lblSolar = tk.Label(frameSelectedItem, image = solarP, anchor= "center", background="grey")
+    lblSolar.image = solarP
+    
+    imageWind = Image.open(basePath / "Images" / "MenuBar" / "MenuEnergy" / "wind-turbine.png")
+    windSized = imageWind.resize((xSize,ySize))
+    windP = ImageTk.PhotoImage(windSized)
+    lblWind = tk.Label(frameSelectedItem, image = windP, anchor= "center", background="grey")
+    lblWind.image = windP
+    
+    imageCoal = Image.open(basePath / "Images" / "MenuBar" / "MenuEnergy" / "coal.png")
+    coalSized = imageCoal.resize((xSize,ySize))
+    coalP = ImageTk.PhotoImage(coalSized)
+    lblCoal = tk.Label(frameSelectedItem, image = coalP, anchor= "center", background="grey")
+    lblCoal.image = coalP
+    
+    imageNuclear = Image.open(basePath / "Images" / "MenuBar" / "MenuEnergy" / "nuclear-plant.png")
+    nuclearSized = imageNuclear.resize((xSize,ySize))
+    nuclearP = ImageTk.PhotoImage(nuclearSized)
+    lblNuclear = tk.Label(frameSelectedItem, image = nuclearP, anchor= "center", background="grey")
+    lblNuclear.image = nuclearP
+    
+    return lblSolar, lblWind, lblCoal, lblNuclear
 
 def createTimeControls(frameTime):
     imagePlay = Image.open(basePath / "Images" / "Time" /  "play.png")

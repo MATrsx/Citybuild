@@ -127,7 +127,7 @@ def weatherForecast(frameCitybuild, month, Options):
     if len(listForecast) == 0:
         for x in range (8):
             if month >= 12 or month <= 2:
-                if temperature >= 20:
+                if temperature <= 20:
                     weather = random.choice((1,2,3,5))
                 else:
                     weather = random.randint(1, 5)
@@ -161,7 +161,7 @@ def weatherForecast(frameCitybuild, month, Options):
         del listForecast[7]
         del listTemperature[7]
         if month >= 12 or month <= 2:
-            if temperature >= 20:
+            if temperature <= 20:
                 weather = random.choice((1,2,3,5))
             else:
                 weather = random.randint(1, 5)

@@ -3,14 +3,15 @@ zieht neue Bewohner und Unternehmen an und sorgt dafür dass ihre Bedürfnisse g
 Gewerbegebiete sowie andere Infrastruktur wie Polizei, Parks etc. um die Bewohner bei Laune zu halten."""
 import random 
 import datetime
-import time
+import time, threading
 import tkinter as tk
 from tkinter import *
 import tkinter.ttk as ttk
 from PIL import ImageTk, Image
 import os
 from pathlib import Path
-import Update, Images, GameStartStop, TimeControls, Satisfaction, Calculations, test, LiveFootball
+import Update, Images, GameStartStop, TimeControls, Satisfaction, Calculations, test, LiveFootball, TestFile
+from Upgrades import Upgrades
 
 """Gamevariables"""
 cityName = ""
@@ -68,6 +69,7 @@ LoopID = 0
 start = False
 showMatch = False
 timechanged = False
+roadcondition = 100
 
 def GameLoop():
     global incomeTime, gameEnd, pause, blockInput, satisfaction, LoopID, start
@@ -110,7 +112,7 @@ def Calculate():
     lblDate, lblEvent, level, lblFactories, lblOffices, lblResidents, lblTransport, lblEducation, lblEntertainment, lblShopping, lblGarbage, lblPolice, lblFire, lblMedical, lblQuery, lblMoneyAdd, frameSatisfaction, frameCitybuild, btnUpgrades, lblValues, upgradePrice, \
     lblStreets, lblWater, incomeTime, lblVehicles, lblEnergy, lblSchools, lblStadium, clicked, events, lblresidentsLeave, lblnewResidents, lblEventChoice1, lblEventChoice2, lblEventChoice3, lblEnergyStatus, \
     lblWaterStatus, lblWeatherStatus, lblPersonStatus, lblMoneyStatus, lblSatisfactionStatus, blinkRed, resetProgress, btnCityInformation, pad1, pad2, pad3, pad4, pad5, lblConstructing, lblDamagedHouse, frameWeather, lblExplain, \
-    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2    
+    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2, roadcondition    
     
     
     balance, residents, maxResidents, taxes, crimeRate, businesses, daysPlayed, education, entertainment, matchday, educatedpeople, daysNoEnergy, daysNoWater, \
@@ -118,14 +120,14 @@ def Calculate():
     lblDate, lblEvent, level, lblFactories, lblOffices, lblResidents, lblTransport, lblEducation, lblEntertainment, lblShopping, lblGarbage, lblPolice, lblFire, lblMedical, lblQuery, lblMoneyAdd, frameSatisfaction, frameCitybuild, btnUpgrades, lblValues, upgradePrice, \
     lblStreets, lblWater, incomeTime, lblVehicles, lblEnergy, lblSchools, lblStadium, clicked, events, lblresidentsLeave, lblnewResidents, lblEventChoice1, lblEventChoice2, lblEventChoice3, lblEnergyStatus, \
     lblWaterStatus, lblWeatherStatus, lblPersonStatus, lblMoneyStatus, lblSatisfactionStatus,blinkRed, resetProgress, btnCityInformation, pad1, pad2, pad3, pad4, pad5, lblConstructing, lblDamagedHouse, frameWeather, lblExplain,\
-    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2 \
+    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2, roadcondition \
     = Calculations.Calculate(
     balance, residents, maxResidents, taxes, crimeRate, businesses, daysPlayed, education, entertainment, matchday, educatedpeople, daysNoEnergy, daysNoWater, \
     stage, gameEnd, listBuildings, transportVehicles, leaveCity, joinCity, showUpgrades, showValues, frist, eventNow, parkCost, unterhaltung, Bildung, blinking, satisfaction, \
     lblDate, lblEvent, level, lblFactories, lblOffices, lblResidents, lblTransport, lblEducation, lblEntertainment, lblShopping, lblGarbage, lblPolice, lblFire, lblMedical, lblQuery, lblMoneyAdd, frameSatisfaction, frameCitybuild, btnUpgrades, lblValues, upgradePrice, \
     lblStreets, lblWater, incomeTime, lblVehicles, lblEnergy, lblSchools, lblStadium, clicked, events, lblresidentsLeave, lblnewResidents, lblEventChoice1, lblEventChoice2, lblEventChoice3, lblEnergyStatus, \
     lblWaterStatus, lblWeatherStatus, lblPersonStatus, lblMoneyStatus, lblSatisfactionStatus, blinkRed, resetProgress, btnCityInformation, pad1, pad2, pad3, pad4, pad5, lblConstructing, lblDamagedHouse, frameWeather, lblExplain,
-    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2)
+    lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2, roadcondition)
     
     blinkRed()
 
@@ -587,7 +589,6 @@ def Game():
 
         #Create Canvas for the Game
         #test.createCanvas(frameCitybuild)
-        Calculations.setupValues(frameSlideValues, taxes)
         
         #Add Images to the canvas
         lblLightning, lblWaterdrop, lblPerson, lblMoney = Images.createImages(frameCitybuild, lblResidents, lblFactories, lblTransport, lblEducation, lblEntertainment, lblShopping, lblGarbage, frameEnergy, frameWater, framePerson, frameMoney, frameTime)
@@ -595,10 +596,11 @@ def Game():
         lblPlay, lblPause, lblFF1x, lblFF2x, lblFF3x = Images.createTimeControls(frameTime)
         lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2 = Images.createStadiums(frameCitybuild, lblEntertainment)
         
-        lblRoadMenu, lblWaterMenu, lblElectricMenu, lblWasteMenu, lblEducationMenu, lblTransportMenu, lblPoliceMenu, lblFireDepMenu, lblHealthMenu, lblEntertainmentMenu, lblShoppingMenu, lblIndicatorOpenMenu, lblIndicatorClosedMenu = Images.createMenuBar(frameMenuBar)
+        lblIndicatorOpenMenu, lblIndicatorClosedMenu = Upgrades.setupFrames(frameCitybuild)
+        
         lblIndicatorClosedMenu.grid(column=12,row=1, sticky="e")
-        lblIndicatorOpenMenu.bind("<Button-1>", statusMenu)
-        lblIndicatorClosedMenu.bind("<Button-1>", statusMenu)
+        lblIndicatorOpenMenu.bind("<Button-1>", lambda y: Upgrades.statusMenu(EventType, roadcondition))
+        lblIndicatorClosedMenu.bind("<Button-1>", lambda x: Upgrades.statusMenu(EventType, roadcondition))
         
         lblFactory, lblOffice = Images.createFactory(frameCitybuild, lblFactories, switchBusiness)
         RBBusinesses.grid(column=0,row=6)
@@ -611,55 +613,6 @@ def Game():
 
         #Enter the game-loop
         GameLoop()
-
-def statusMenu(event):
-    global showMenu, showItem, lblRoadMenu, lblWaterMenu, lblElectricMenu, lblWasteMenu, lblEducationMenu, lblTransportMenu, lblPoliceMenu, lblFireDepMenu, lblHealthMenu, lblEntertainmentMenu, lblShoppingMenu, lblIndicatorOpenMenu, lblIndicatorClosedMenu
-    padX = 5
-    
-    if showMenu == False:
-        lblRoadMenu.grid(column=0,row=1, padx=padX)
-        lblWaterMenu.grid(column=1,row=1, padx=padX)
-        lblElectricMenu.grid(column=2,row=1, padx=padX)
-        lblWasteMenu.grid(column=3,row=1, padx=padX)
-        lblEducationMenu.grid(column=4,row=1, padx=padX)
-        lblTransportMenu.grid(column=5,row=1, padx=padX)
-        lblPoliceMenu.grid(column=6,row=1, padx=padX)
-        lblFireDepMenu.grid(column=7,row=1, padx=padX)
-        lblHealthMenu.grid(column=8,row=1, padx=padX)
-        lblEntertainmentMenu.grid(column=9,row=1, padx=padX)
-        lblShoppingMenu.grid(column=10,row=1, padx=padX)
-        lblRoadMenu.bind("<Button-1>", optionRoad)
-        lblWaterMenu.bind("<Button-1>", optionRoad)
-        lblElectricMenu.bind("<Button-1>", optionRoad)
-        lblWasteMenu.bind("<Button-1>", optionRoad)
-        lblEducationMenu.bind("<Button-1>", optionRoad)
-        lblTransportMenu.bind("<Button-1>", optionRoad)
-        lblPoliceMenu.bind("<Button-1>", optionRoad)
-        lblFireDepMenu.bind("<Button-1>", optionRoad)
-        lblHealthMenu.bind("<Button-1>", optionRoad)
-        lblEntertainmentMenu.bind("<Button-1>", optionRoad)
-        lblShoppingMenu.bind("<Button-1>", optionRoad)
-        lblIndicatorClosedMenu.grid_forget()
-        lblIndicatorOpenMenu.grid(column=12, row=1)
-        showMenu = True
-    elif showMenu == True:
-        lblRoadMenu.grid_forget()
-        lblWaterMenu.grid_forget()
-        lblElectricMenu.grid_forget()
-        lblWasteMenu.grid_forget()
-        lblEducationMenu.grid_forget()
-        lblTransportMenu.grid_forget()
-        lblPoliceMenu.grid_forget()
-        lblFireDepMenu.grid_forget()
-        lblHealthMenu.grid_forget()
-        lblEntertainmentMenu.grid_forget()
-        lblShoppingMenu.grid_forget()
-        lblIndicatorClosedMenu.grid(column=12, row=1)
-        lblIndicatorOpenMenu.grid_forget()
-        if showItem == True:
-            frameSelectedItem.grid_forget()
-            showItem = False
-        showMenu = False
 
 def switchBusiness(event):
     global activeBusiness
@@ -683,29 +636,6 @@ def switchBusiness(event):
         
         lblFactory.grid(column=0,row=5)
         lblFactories.grid(column=1,row=5, sticky="w")
-
-def optionRoad(event):
-    global showItem, lblRoadMenu, lblRoadCity, lblRoadIntercity, lblMotorway, lblParking, lblParkingLot
-      
-    if showItem == False: 
-        frameSelectedItem.grid(column=0,row=0, columnspan=10, sticky="w")
-        lblRoadMenu["background"] = "blue"
-        lblRoadCity.grid(column=0,row=0, sticky="w") 
-        lblRoadIntercity.grid(column=1,row=0, sticky="w", padx=5) 
-        lblMotorway.grid(column=2,row=0, sticky="w", padx=5) 
-        lblDivide1.grid(column=3,row=0, sticky="w", padx=5)
-        lblParking.grid(column=4,row=0, sticky="w", padx=5)
-        lblParkingLot.grid(column=5,row=0, sticky="w", padx=5)
-        lblRoadCity.bind("<Button-1>") 
-        lblRoadIntercity.bind("<Button-1>")  
-        lblMotorway.bind("<Button-1>")  
-        lblParking.bind("<Button-1>") 
-        lblParkingLot.bind("<Button-1>") 
-        showItem = True
-    elif showItem == True:
-        frameSelectedItem.grid_forget()
-        lblRoadMenu["background"] = "#F0F0F0"
-        showItem = False
     
 def saveGame():
     global entEntry, lblWelcome, cityName, balance, taxes, residents, maxResidents, businesses, transportVehicles, education, entertainment, stage, upgradePrice, level, daysPlayed, p1, p2, p3, p4, p5, p6, lvl1, lvl2, lvl3, lvl4, lvl5, lvl6, btnSave
@@ -727,7 +657,8 @@ def endGame():
     
 def newGame():
     global btnClose, btnLoad, lblExplain, btnSave, btnStart, lblQuery, lblSave1, lblSave2, lblSave3, entEntry, lblWelcome, cityName
-    GameStartStop.newGame(btnClose, btnLoad, lblExplain, btnSave, btnStart, lblQuery, lblSave1, lblSave2, lblSave3, entEntry, lblWelcome)
+    GameStartStop.newGame(btnClose, btnLoad, lblExplain, btnSave, btnStart, lblQuery, lblSave1, lblSave2, lblSave3, entEntry, lblWelcome, window)
+    btnSave["command"] = lambda: [TestFile.progressbar().start_progressbar(window), TestFile.action_timer().action_timer_thread(saveGame)]
     
 def blinkRed():
     global blockInput, blinking, residents, businesses, level  
@@ -786,9 +717,6 @@ def liveFootballMatch(event):
         pause = False
         TimeControls.normalSpeed(12000)
 
-def changeValues(frameSlideValues):
-    print("")
-
 pad1 = (50 - len(str(residents))) / 2 + 10
 pad4 = (50 - len(str(balance))) / 2 + 10
 pad5 = (50 - len(str(satisfaction))) / 2 + 10
@@ -799,22 +727,6 @@ window.resizable(width=False, height=False)
 
 frameCitybuild = tk.Frame(window)
 frameCitybuild.grid(column=0, row=0, sticky = "nswe", columnspan=30, rowspan=30)
-
-frameSlideValues = tk.Frame(frameCitybuild)
-frameSlideValues.grid(column=8, row=5, sticky = "nswe", columnspan=3, rowspan=8)
-frameSlideValues.grid_rowconfigure((1,3), minsize=50)
-
-frameMenuBar = tk.Frame(frameCitybuild, width=5)
-frameMenuBar.grid(column=4, row=25, sticky = "nswe", columnspan=12)
-frameMenuBar.grid_rowconfigure(0, weight=1, minsize=55)
-frameMenuBar.grid_rowconfigure(1, weight=1, minsize=40)
-frameMenuBar.grid_columnconfigure((1,2,3,4,5,6,7,8,9,10,11), weight=1)
-showMenu = False
-
-frameSelectedItem = tk.Frame(frameMenuBar, background="grey")
-lblRoadCity, lblRoadIntercity, lblMotorway, lblParking, lblParkingLot = Images.createRoadIcons(frameSelectedItem)
-lblDivide1 = tk.Label(frameSelectedItem, width=5, background="grey", foreground="grey")
-showItem = False
 
 frameTime = tk.Frame(frameCitybuild)
 frameTime.grid(column=0, row=25, sticky = "n", columnspan=3, rowspan=2, pady=10)
@@ -927,7 +839,7 @@ lblEventChoice3 = ttk.Label(frameCitybuild, text= "")
 
 entEntry = ttk.Entry(frameCitybuild)
 
-btnSave = ttk.Button(master=frameCitybuild, text="Speichern", command=saveGame)
+btnSave = ttk.Button(master=frameCitybuild, text="Speichern", command= saveGame)
 
 btnStart = ttk.Button(master=frameCitybuild, text="Neues Spiel", command=newGame)
 btnStart.grid(column=0, row=1)
