@@ -156,7 +156,7 @@ def foulPlay(window, Ball):
 
     canvasCurrentMinute = canvasEvent.create_text(100,33, text=f"{currentMinute}")
     frames = footballEventAnimation.loadAnimation(canvasEvent, 65, 38, "trillerpfeife.gif")
-    footballEventAnimation.showAnimation(canvasEvent, window, frames)      
+    footballEventAnimation.showAnimation(canvasEvent, frames)      
     canvasEvent.after(6500, lambda: canvasEvent.delete("all"))
     canvasEvent.after(6500, lambda: canvasEvent.grid_forget())
     resumeAfter(0, 7, window, canvasLocal, Ball)

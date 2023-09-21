@@ -1,6 +1,7 @@
 from PIL import ImageTk, Image, ImageSequence
 from pathlib import Path
 import tkinter as tk
+import threading
 import time
 
 
@@ -27,7 +28,7 @@ def getImages(canvas, x1, y1, image):
         while True:
             try:
                 gif.seek(index)
-                gif.resize((50,50))
+                gif.resize((50,100))
                 frame = ImageTk.PhotoImage(gif)
                 frames.append(frame)
             except EOFError:
@@ -37,13 +38,16 @@ def getImages(canvas, x1, y1, image):
             
         return frames
 
-def playGif(canvas, window, frames):
+def playGif(canvas, frames):
     global count
     
     if count < len(frames) - 1:
-        window.after(75, nextFrame, canvas, window, frames)
+        canvas.after(75, nextFrame, canvas, frames)
+    else:
+        count = 0
+        nextFrame(canvas, frames)
         
-def nextFrame(canvas, window, frames):
+def nextFrame(canvas, frames):
     global count, canvasID
     
     canvas.itemconfig(
@@ -52,16 +56,16 @@ def nextFrame(canvas, window, frames):
     )
     
     count += 1
-    playGif(canvas, window, frames)
+    playGif(canvas, frames)
 
 def loadAnimation(canvas, x1, y1, image):
     frames = getImages(canvas, x1, y1, image)
     return frames
 
-def showAnimation(canvas, window, frames):
+def showAnimation(canvas, frames):
     global count
     count = 0
-    playGif(canvas, window, frames)
+    playGif(canvas, frames)
 
 def removeFromCanvas(canvas):
     global thumbnail, canvasID

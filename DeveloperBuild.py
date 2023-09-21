@@ -653,7 +653,7 @@ def loadGame():
         loadID = frameCitybuild.after(1000, loadGame)
     
 def endGame():
-    GameStartStop.endGame(frameCitybuild)
+    GameStartStop.endGame(window)
     
 def newGame():
     global btnClose, btnLoad, lblExplain, btnSave, btnStart, lblQuery, lblSave1, lblSave2, lblSave3, entEntry, lblWelcome, cityName

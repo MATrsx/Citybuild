@@ -42,8 +42,8 @@ def createImages(frameCitybuild, lblResidents, lblBusinesses, lblTransport, lblE
     
     #lblStadium
     
-    imageShopping = Image.open(basePath / "Images" / "department_store.png")
-    shoppingSized = imageShopping.resize((50,50))
+    imageShopping = Image.open(basePath / "Images" / "mallLarge.png")
+    shoppingSized = imageShopping.resize((100,60))
     shoppingP = ImageTk.PhotoImage(shoppingSized)
     lblStore = tk.Label(frameCitybuild, image = shoppingP)
     lblStore.image = shoppingP
@@ -333,9 +333,7 @@ def createRoadIcons(frameSelectedItem):
     
     return lblRoadCity, lblRoadIntercity, lblMotorway, lblParking, lblParkingLot
 
-def createEnergyIcons(frameSelectedItem):
-    xSize = 50
-    ySize = 50
+def createEnergyIcons(frameSelectedItem, xSize, ySize):
 
     imageSolar = Image.open(basePath / "Images" / "MenuBar" / "MenuEnergy" / "solar-panels.png")
     solarSized = imageSolar.resize((xSize,ySize))
@@ -361,7 +359,13 @@ def createEnergyIcons(frameSelectedItem):
     lblNuclear = tk.Label(frameSelectedItem, image = nuclearP, anchor= "center", background="grey")
     lblNuclear.image = nuclearP
     
-    return lblSolar, lblWind, lblCoal, lblNuclear
+    imageSubstation = Image.open(basePath / "Images" / "MenuBar" / "MenuEnergy" / "substation.png")
+    substationSized = imageSubstation.resize((xSize,ySize))
+    substationP = ImageTk.PhotoImage(substationSized)
+    lblSubstation = tk.Label(frameSelectedItem, image = substationP, anchor= "center", background="grey")
+    lblSubstation.image = substationP
+    
+    return lblSolar, lblWind, lblCoal, lblNuclear, lblSubstation
 
 def createTimeControls(frameTime):
     imagePlay = Image.open(basePath / "Images" / "Time" /  "play.png")
@@ -517,6 +521,15 @@ def weatherIcon(frameWeather):
     lblTemperature = tk.Label(text = "")
     
     return lblSunny, lblCloudy, lblRainy, lblThunder, lblSnow, lblTemperature
+
+def createEnergyPointer(frameEnergyConsumption):
+    imageLightningPointer = Image.open(basePath / "Images" / "zap.png")
+    lightningPointerSized = imageLightningPointer.resize((50,50))
+    lightningPointerP = ImageTk.PhotoImage(lightningPointerSized)
+    lblLightningPointer = tk.Label(frameEnergyConsumption, image = lightningPointerP, anchor= "center")
+    lblLightningPointer.image = lightningPointerP
+    
+    return lblLightningPointer
 
 def blinkRed(residents, businesses, level, lblWaterdrop, frameWater, lblWaterStatus, frameEnergy, lblLightning, lblEnergyStatus, lblPerson, lblMoney, blockInput):
     #print("BLRED")

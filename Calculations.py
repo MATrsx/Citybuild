@@ -4,6 +4,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import Satisfaction, Images, Update, TimeControls, Weather
 start = False
+balancenow = 0
 criminalResidents = 0
 injuredResidents = []
 lvl2 = 0
@@ -20,7 +21,9 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
     lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2, roadcondition):
     """Calculate all values needed for the game"""
     lvlBonus = None
-    global start, criminalResidents, injuredResidents, lvl2, lvl3_1, lvl3_2, lvl4_1, lvl4_2
+    global start, criminalResidents, injuredResidents, lvl2, lvl3_1, lvl3_2, lvl4_1, lvl4_2, balancenow
+    
+    balancenow = balance
     
     #Remove event after finishing
     if eventNow == False:
@@ -275,10 +278,29 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
     lblWaterStatus, lblWeatherStatus, lblPersonStatus, lblMoneyStatus, lblSatisfactionStatus,blinkRed, resetProgress, btnCityInformation, pad1, pad2, pad3, pad4, pad5, lblConstructing, lblDamagedHouse, frameWeather, lblExplain, \
     lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2, roadcondition
 
-
-
-
-
+def calculateEnergyLevel(label):
+    global balancenow
+    if label == "Solar":
+        if balancenow >= 25:
+            balancenow -= 25
+        else:
+            return False
+    if label == "Wind":
+        if balancenow >= 50:
+            balancenow -= 50
+        else:
+            return False
+    if label == "Coal":
+        if balancenow >= 100:
+            balancenow -= 100
+        else:
+            return False
+    if label == "Nuclear":
+        if balancenow >= 150:
+            balancenow -= 150
+        else:
+            return False
+    
 
 
 taxProgressResidents = 0
@@ -350,3 +372,4 @@ def getCurrentTaxes():
     taxesBusinesses = taxSliderBusiness.get()
     return taxes, taxesBusinesses
     
+        

@@ -31,3 +31,4 @@ Bild von <a href="https://de.freepik.com/vektoren-kostenlos/flache-hotelfassade-
 <a href="https://www.flaticon.com/free-icons/coal" title="coal icons">Coal icons created by Eucalyp - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/nuclear" title="nuclear icons">Nuclear icons created by surang - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/wind-turbine" title="wind turbine icons">Wind turbine icons created by Smashicons - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/power-plant" title="power plant icons">Power plant icons created by Freepik - Flaticon</a>
