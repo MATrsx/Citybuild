@@ -182,6 +182,7 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
     if showValues == False:
         showValues = True
         print(showUpgrades)
+        balance = balancenow
         Update.UpdateCityInfLabel(showValues, btnUpgrades, stage, lblValues, residents, maxResidents, balance, taxes, businesses, listBuildings, unterhaltung, incomeTime, lblDamagedHouse, 
                                   lblresidentsLeave, leaveCity, joinCity, lblConstructing, lblnewResidents, lblStreets, lblWater, lblEnergy, lblVehicles, lblSchools, lblStadium, showUpgrades, lblExplain)
         showValues = False

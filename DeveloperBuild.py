@@ -610,7 +610,7 @@ def Game():
         
         #Add timespeedmanipulation buttons to the canvas (pause, 1x, 2x, 5x Speed)
         TimeControls.initButtons(lblPlay, lblPause, lblFF1x, lblFF2x, lblFF3x)    
-
+        
         #Enter the game-loop
         GameLoop()
 

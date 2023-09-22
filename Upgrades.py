@@ -220,28 +220,28 @@ class Upgrades():
             levelEnergy[0] += 1
             funderror = Calculations.calculateEnergyLevel("Solar")
             if levelEnergy[0] == 1:
-                Upgrades.energyFlow1(canvas, 0)
+                Upgrades.energyFlow1(canvas, 0, 0, 0)
                 canvas.itemconfig(lineSolar, fill= "#50ED11")
                 
         elif event.widget == lblWind:
             levelEnergy[1] += 1
             funderror = Calculations.calculateEnergyLevel("Wind")
             if levelEnergy[1] == 1:
-                Upgrades.energyFlow2(canvas, 0)
+                Upgrades.energyFlow2(canvas, 0, 0, 0)
                 canvas.itemconfig(lineWind, fill= "#50ED11")
                 
         elif event.widget == lblCoal:
             levelEnergy[2] += 1
             funderror = Calculations.calculateEnergyLevel("Coal")
             if levelEnergy[2] == 1:
-                Upgrades.energyFlow3(canvas, 0)
+                Upgrades.energyFlow3(canvas, 0, 0, 0)
                 canvas.itemconfig(lineCoal, fill= "#50ED11")
                 
         elif event.widget == lblNuclear:
             levelEnergy[3] += 1
             funderror = Calculations.calculateEnergyLevel("Nuclear")
             if levelEnergy[3] == 1:
-                Upgrades.energyFlow4(canvas, 0)
+                Upgrades.energyFlow4(canvas, 0, 0, 0)
                 canvas.itemconfig(lineNuclear, fill= "#50ED11")
     
     def forgetAll():
@@ -288,13 +288,13 @@ class Upgrades():
         lineNuclear = canvas.create_line(440,290,295,235, fill=colour[3], width=5)
         
         if levelEnergy[0] != 0:
-            Upgrades.energyFlow1(canvas, 0)
+            Upgrades.energyFlow1(canvas, 0, 0, 0)
         if levelEnergy[1] != 0:
-            Upgrades.energyFlow2(canvas, 0)
+            Upgrades.energyFlow2(canvas, 0, 0, 0)
         if levelEnergy[2] != 0:
-            Upgrades.energyFlow3(canvas, 0)
+            Upgrades.energyFlow3(canvas, 0, 0, 0)
         if levelEnergy[3] != 0:
-            Upgrades.energyFlow4(canvas, 0)
+            Upgrades.energyFlow4(canvas, 0, 0, 0)
         
         SolarImage = canvas.create_image(50,150,image= lblSolar.image)
         WindImage = canvas.create_image(50,250,image= lblWind.image)
@@ -302,7 +302,7 @@ class Upgrades():
         NuclearImage = canvas.create_image(450,250,image= lblNuclear.image)
         SubstationImage = canvas.create_image(250,200,image= lblSubstation.image)
     
-    def energyFlow1(canvas, Oval1):
+    def energyFlow1(canvas, Oval1, Oval2, Oval3):
         global count, moveEnergy
         count[0] += 1
         moveXSolar = (210-65) / 10
@@ -310,15 +310,25 @@ class Upgrades():
         
         if count[0] == 1:
             Oval1 = canvas.create_oval(65,180,75,190, fill="yellow", width=3)
-        
+        if count[0] == 4:
+            Oval2 = canvas.create_oval(65,180,75,190, fill="yellow", width=3)
+        if count[0] == 7:
+            Oval3 = canvas.create_oval(65,180,75,190, fill="yellow", width=3)
+
+
         if count[0] <= 10:   
-            moveEnergy[0] = canvas.after(100, lambda: [canvas.move(Oval1, moveXSolar, moveYSolar), Upgrades.energyFlow1(canvas, Oval1)]) 
+            moveEnergy[0] = canvas.after(100, lambda: [canvas.move(Oval1, moveXSolar, moveYSolar), 
+                                                       canvas.move(Oval2, moveXSolar, moveYSolar),
+                                                       canvas.move(Oval3, moveXSolar, moveYSolar),
+                                                       Upgrades.energyFlow1(canvas, Oval1, Oval2, Oval3)]) 
         if count[0] == 11:
             count[0] = 0
             canvas.move(Oval1, 210, 230)
-            Upgrades.energyFlow1(canvas, Oval1)
+            canvas.after(300, lambda: canvas.move(Oval2, 210, 230))
+            canvas.after(600, lambda: canvas.move(Oval3, 210, 230))
+            Upgrades.energyFlow1(canvas, Oval1, Oval2, Oval3)
             
-    def energyFlow2(canvas, Oval1):
+    def energyFlow2(canvas, Oval1, Oval2, Oval3):
         global count, moveEnergy
         count[1] += 1
         moveXSolar = (210-70) / 10
@@ -326,15 +336,24 @@ class Upgrades():
         
         if count[1] == 1:
             Oval1 = canvas.create_oval(70,280,80,290, fill="yellow", width=3)
+        if count[1] == 4:
+            Oval2 = canvas.create_oval(70,280,80,290, fill="yellow", width=3)
+        if count[1] == 7:
+            Oval3 = canvas.create_oval(70,280,80,290, fill="yellow", width=3)
         
         if count[1] <= 10:   
-            moveEnergy[1] = canvas.after(100, lambda: [canvas.move(Oval1, moveXSolar, moveYSolar), Upgrades.energyFlow2(canvas, Oval1)]) 
+            moveEnergy[1] = canvas.after(100, lambda: [canvas.move(Oval1, moveXSolar, moveYSolar),
+                                                       canvas.move(Oval2, moveXSolar, moveYSolar),
+                                                       canvas.move(Oval3, moveXSolar, moveYSolar),
+                                                       Upgrades.energyFlow2(canvas, Oval1, Oval2, Oval3)]) 
         if count[1] == 11:
             count[1] = 0
             canvas.move(Oval1, 210, 230)
-            Upgrades.energyFlow2(canvas, Oval1)
+            canvas.after(300, lambda: canvas.move(Oval2, 210, 230))
+            canvas.after(600, lambda: canvas.move(Oval3, 210, 230))
+            Upgrades.energyFlow2(canvas, Oval1, Oval2, Oval3)
 
-    def energyFlow3(canvas, Oval1):
+    def energyFlow3(canvas, Oval1, Oval2, Oval3):
         global count, moveEnergy
         count[2] += 1
         moveXSolar = (285-420) / 10
@@ -342,15 +361,24 @@ class Upgrades():
         
         if count[2] == 1:
             Oval1 = canvas.create_oval(420,180,430,190, fill="yellow", width=3)
+        if count[2] == 4:
+            Oval2 = canvas.create_oval(420,180,430,190, fill="yellow", width=3)
+        if count[2] == 7:
+            Oval3 = canvas.create_oval(420,180,430,190, fill="yellow", width=3)
         
         if count[2] <= 10:   
-            moveEnergy[2] = canvas.after(100, lambda: [canvas.move(Oval1, moveXSolar, moveYSolar), Upgrades.energyFlow3(canvas, Oval1)]) 
+            moveEnergy[2] = canvas.after(100, lambda: [canvas.move(Oval1, moveXSolar, moveYSolar), 
+                                                       canvas.move(Oval2, moveXSolar, moveYSolar), 
+                                                       canvas.move(Oval3, moveXSolar, moveYSolar), 
+                                                       Upgrades.energyFlow3(canvas, Oval1, Oval2, Oval3)]) 
         if count[2] == 11:
             count[2] = 0
-            canvas.move(Oval1, 295, 235)
-            Upgrades.energyFlow3(canvas, Oval1)
+            canvas.move(Oval1, 295, 230)
+            canvas.after(300, lambda: canvas.move(Oval2, 210, 230))
+            canvas.after(600, lambda: canvas.move(Oval3, 210, 230))
+            Upgrades.energyFlow3(canvas, Oval1, Oval2, Oval3)
 
-    def energyFlow4(canvas, Oval1):
+    def energyFlow4(canvas, Oval1, Oval2, Oval3):
         global count, moveEnergy
         count[3] += 1
         moveXSolar = (285-440) / 10
@@ -358,12 +386,21 @@ class Upgrades():
         
         if count[3] == 1:
             Oval1 = canvas.create_oval(440,290,450,300, fill="yellow", width=3)
+        if count[3] == 4:
+            Oval2 = canvas.create_oval(440,290,450,300, fill="yellow", width=3)
+        if count[3] == 7:
+            Oval3 = canvas.create_oval(440,290,450,300, fill="yellow", width=3)
         
         if count[3] <= 10:   
-            moveEnergy[3] = canvas.after(100, lambda: [canvas.move(Oval1, moveXSolar, moveYSolar), Upgrades.energyFlow4(canvas, Oval1)]) 
+            moveEnergy[3] = canvas.after(100, lambda: [canvas.move(Oval1, moveXSolar, moveYSolar), 
+                                                       canvas.move(Oval2, moveXSolar, moveYSolar), 
+                                                       canvas.move(Oval3, moveXSolar, moveYSolar), 
+                                                       Upgrades.energyFlow4(canvas, Oval1, Oval2, Oval3)]) 
         if count[3] == 11:
             count[3] = 0
-            canvas.move(Oval1, 295, 235)
-            Upgrades.energyFlow4(canvas, Oval1)
+            canvas.move(Oval1, 295, 225)
+            canvas.after(300, lambda: canvas.move(Oval2, 210, 230))
+            canvas.after(600, lambda: canvas.move(Oval3, 210, 230))
+            Upgrades.energyFlow4(canvas, Oval1, Oval2, Oval3)
     
     
