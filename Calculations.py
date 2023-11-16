@@ -2,7 +2,7 @@ import random
 import datetime
 import tkinter as tk
 import tkinter.ttk as ttk
-import Satisfaction, Images, Update, TimeControls, Weather
+import Satisfaction, Images, Update, TimeControls, Weather, Upgrades
 start = False
 balancenow = 0
 criminalResidents = 0
@@ -12,6 +12,7 @@ lvl3_1 = 0
 lvl3_2 = 0
 lvl4_1 = 0
 lvl4_2 = 0
+countLoc = [0,0,0,0]
 
 def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, daysPlayed, education, entertainment, matchday, educatedpeople, daysNoEnergy, daysNoWater, 
     stage, gameEnd, listBuildings, transportVehicles, leaveCity, joinCity, showUpgrades, showValues, frist, eventNow, parkCost, unterhaltung, Bildung, blinking, satisfaction, 
@@ -21,7 +22,7 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
     lblStadiumLvl1, lblStadiumLvl2, lblStadiumLvl3_1, lblStadiumLvl3_2, lblStadiumLvl4_1, lblStadiumLvl4_2, roadcondition):
     """Calculate all values needed for the game"""
     lvlBonus = None
-    global start, criminalResidents, injuredResidents, lvl2, lvl3_1, lvl3_2, lvl4_1, lvl4_2, balancenow
+    global start, criminalResidents, injuredResidents, lvl2, lvl3_1, lvl3_2, lvl4_1, lvl4_2, balancenow, countLoc
     
     balancenow = balance
     
@@ -96,7 +97,7 @@ def Calculate(balance, residents, maxResidents, taxes, crimerate, businesses, da
         x += 1
             
     capacity = capacity - len(injuredResidents)
-    
+
     #Display each `Building` currently available
     lblFactories["text"] = f" {businesses} Fabriken"
     lblOffices["text"] = f" {businesses} Bürogebäude"
@@ -372,5 +373,4 @@ def getCurrentTaxes():
     taxes = taxSliderResidents.get()
     taxesBusinesses = taxSliderBusiness.get()
     return taxes, taxesBusinesses
-    
         

@@ -247,16 +247,30 @@ def loadPictures(x1, y1, type):
             print(ph)
             break
 
-def createCanvas(frameCitybuild):
-    lblMenuBar = tk.Label(frameCitybuild, text= "Menüleiste\n ausklappen")
-    lblMenuBar.grid(column=7, row=25)
-    lblMenuBar.bind('<Button-1>', openMenu)
+def createCanvas(window):
+    # Create an instance of tkinter frame or window
+    listFields = []
+    listImages = []
+    rotatedFields = []
+    activeLabel = ""
+    rotation = 0
 
-    lblStreets = tk.Label(frameCitybuild, text= "Straßenbau")
-    lblHouses = tk.Label(frameCitybuild, text= "Hausbau")
+    ph = [] #keep photoimage instances separate
+    basePath = Path(__file__).parent
+    
+    lblMenuBar = tk.Label(text= "Menüleiste\n ausklappen")
+    lblMenuBar.grid(column=8, row=25)
+
+    lblStreets = tk.Label(text= "Straßenbau")
+    lblHouses = tk.Label(text= "Hausbau")
 
     # Create a canvas widget
-    canvas = tk.Canvas(frameCitybuild, height=510, width=510)
+    canvas = tk.Canvas(window, height=510, width=510)
     canvas.create_rectangle(10,10,500,500, width=5, outline="red")
     saveCanvas(canvas, lblStreets, lblHouses, lblMenuBar)
     canvas.grid(row=3, column=5, rowspan=20, columnspan=50)
+
+def createMenuBar():
+    lblMenuBar = tk.Label(text= "Menüleiste\n ausklappen")
+    lblMenuBar.grid(column=8, row=25)
+    lblMenuBar.bind('<Button-1>', openMenu)

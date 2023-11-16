@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import Update, Images, GameStartStop, TimeControls, Satisfaction, Calculations, test, LiveFootball, TestFile
 from Upgrades import Upgrades
+import Upgrades as Upg
 
 """Gamevariables"""
 cityName = ""
@@ -70,6 +71,8 @@ start = False
 showMatch = False
 timechanged = False
 roadcondition = 100
+countLoc = [0,0,0,0]
+energy = 0
 
 def GameLoop():
     global incomeTime, gameEnd, pause, blockInput, satisfaction, LoopID, start
@@ -104,8 +107,20 @@ def timeChanged():
     if TimeControls.currentHour == 0 and timechanged == True:
         timechanged = False
         GameLoop()
+    checkUpdates()
     checkTime()
-    
+
+def checkUpdates():
+    global countLoc, balance, energy
+    for station in range (0, len(Upg.levelEnergy)):
+        if Upg.levelEnergy[station] != countLoc[station] and balance >= 100:
+            energy = (Upg.levelEnergy[0] * 5) + (Upg.levelEnergy[1] * 10) + (Upg.levelEnergy[2] * 15) + (Upg.levelEnergy[3] * 20)
+            while Upg.levelEnergy[station] != countLoc[station]:
+                balance = balance - (100 + Upg.levelEnergy[station] * station)
+                countLoc[station] += 1
+    lblMoneyStatus["text"] = f"{balance}$"
+    lblEnergyStatus["text"] = f"{residents + businesses * 2 + level[5] * 3} / {energy}"
+
 def Calculate():
     global balance, residents, maxResidents, taxes, crimeRate, businesses, daysPlayed, education, entertainment, matchday, educatedpeople, daysNoEnergy, daysNoWater, \
     stage, gameEnd, listBuildings, transportVehicles, leaveCity, joinCity, showUpgrades, showValues, frist, eventNow, parkCost, unterhaltung, Bildung, blinking, satisfaction, \
@@ -589,6 +604,7 @@ def Game():
 
         #Create Canvas for the Game
         #test.createCanvas(frameCitybuild)
+        #test.createMenuBar()
         
         #Add Images to the canvas
         lblLightning, lblWaterdrop, lblPerson, lblMoney = Images.createImages(frameCitybuild, lblResidents, lblFactories, lblTransport, lblEducation, lblEntertainment, lblShopping, lblGarbage, frameEnergy, frameWater, framePerson, frameMoney, frameTime)
